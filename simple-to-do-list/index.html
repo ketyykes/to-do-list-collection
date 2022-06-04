@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>
+      <input type="text" id="input" />
+      <button id="add">add</button>
+    </p>
+    <ul id="ul">
+      <li id="li" style="margin: 10px; text-decoration: line-through">
+        <input type="checkbox" />測試<button style="margin: 10px">
+          delete
+        </button>
+      </li>
+    </ul>
+    <script>
+      const getAddElement = document.getElementById("add");
+      const getInputElement = document.getElementById("input");
+      const getUlElement = document.getElementById("ul");
+      let listArray = [];
+
+      getAddElement.addEventListener("click", addFunction);
+
+      function addFunction() {
+        let item = {
+          date: Date.now(),
+          content: getInputElement.value,
+          done: false,
+        };
+        listArray.push(item);
+        render(listArray);
+      }
+
+      getUlElement.addEventListener("click", deleteFunction);
+
+      function deleteFunction(e) {
+        if (e.target.nodeName === "BUTTON") {
+          let thisLi = e.target.parentNode;
+          let date = thisLi.dataset.id;
+          listArray = listArray.filter(function (el) {
+            return el.date.toString() !== date;
+          });
+          render(listArray);
+        }
+      }
+
+      getUlElement.addEventListener("change", completeFunction);
+
+      function completeFunction(e) {
+        if (e.target.nodeName === "INPUT") {
+          console.log(e.target);
+          let thisLi = e.target.parentNode;
+          let date = thisLi.dataset.id;
+          listArray.forEach(function (el) {
+            if (el.date.toString() == date) {
+              el.done = !el.done;
+            }
+          });
+          console.log(listArray);
+          render(listArray);
+        }
+      }
+      function render(listTodo) {
+        getUlElement.innerHTML = "";
+        var string = "";
+        listTodo.forEach(function (item) {
+          string += `
+                      <li style="margin: 10px; text-decoration: ${
+                        item.done ? "line-through" : "none"
+                      };" data-id=${item.date}><input type="checkbox" 
+                      ${item.done ? "checked" : ""}
+                      />
+                        ${item.content}
+                        <button style="margin: 10px">
+                          delete
+                        </button>
+                      </li>`;
+        });
+
+        getUlElement.innerHTML = string;
+      }
+    </script>
+  </body>
+</html>
